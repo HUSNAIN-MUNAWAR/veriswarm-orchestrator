@@ -1,0 +1,17 @@
+stateDiagram-v2
+  [*] --> created
+  created --> planned
+  planned --> validated
+  validated --> queued
+  queued --> running
+  running --> awaiting_approval
+  awaiting_approval --> running: approved
+  awaiting_approval --> rejected: rejected
+  running --> verifying
+  verifying --> completed: verifier passes
+  verifying --> failed: verifier fails
+  running --> cancelled
+  completed --> [*]
+  failed --> [*]
+  rejected --> [*]
+  cancelled --> [*]

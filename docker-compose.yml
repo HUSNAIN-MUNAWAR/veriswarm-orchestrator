@@ -1,0 +1,23 @@
+services:
+  veriswarm-api:
+    image: node:24-bookworm
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    command: npm run dev
+    ports:
+      - "4317:4317"
+    environment:
+      PORT: 4317
+      VERISWARM_PROVIDER: mock
+      VERISWARM_DATA_DIR: /workspace/data
+      VERISWARM_ALLOWED_WORKSPACE: /workspace/fixtures
+  postgres:
+    image: postgres:17
+    profiles: ["production-target"]
+    environment:
+      POSTGRES_DB: veriswarm
+      POSTGRES_USER: veriswarm
+      POSTGRES_PASSWORD: change-me-local-only
+    ports:
+      - "5432:5432"

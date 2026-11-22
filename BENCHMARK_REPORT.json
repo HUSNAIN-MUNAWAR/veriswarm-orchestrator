@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-11-22T19:39:14.370Z",
+  "dataset": "repository-owned order idempotency fixtures",
+  "developmentCases": 12,
+  "heldOutCases": 0,
+  "comparison": [
+    {
+      "strategy": "single-worker",
+      "successRate": 0.9166666666666666,
+      "reviewRate": 0,
+      "costUsd": 0.144,
+      "toolCalls": 24
+    },
+    {
+      "strategy": "planner-worker",
+      "successRate": 1,
+      "reviewRate": 0,
+      "costUsd": 0.23999999999999996,
+      "toolCalls": 36
+    },
+    {
+      "strategy": "reviewed-worker",
+      "successRate": 1,
+      "reviewRate": 1,
+      "costUsd": 0.40800000000000014,
+      "toolCalls": 60
+    },
+    {
+      "strategy": "parallel-adjudicated",
+      "successRate": 1,
+      "reviewRate": 1,
+      "costUsd": 0.40800000000000014,
+      "toolCalls": 60
+    },
+    {
+      "strategy": "risk-adaptive",
+      "successRate": 1,
+      "reviewRate": 1,
+      "costUsd": 0.40800000000000014,
+      "toolCalls": 60
+    }
+  ],
+  "qualification": {
+    "decision": "not-qualified",
+    "observedRate": 1,
+    "lowerBound": 0.7574992425007574,
+    "reason": "The one-sided lower confidence bound does not meet the configured target."
+  },
+  "limitations": [
+    "synthetic fixture",
+    "no CRM-Agent-Bench checkout",
+    "held-out set intentionally not used for policy selection"
+  ]
+}

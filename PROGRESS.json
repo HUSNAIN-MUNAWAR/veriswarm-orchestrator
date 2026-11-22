@@ -1,0 +1,16 @@
+{
+  "project": "veriswarm-orchestrator",
+  "status": "working-core-delivered",
+  "updated": "2026-11-23",
+  "milestones": {
+    "foundation": "complete",
+    "real-execution-adapter": "complete-but-authentication-dependent",
+    "orchestration": "complete",
+    "evaluation": "complete",
+    "prompt-lab": "complete-minimal",
+    "product-ui": "complete-minimal",
+    "research-evidence": "fixture-only",
+    "demonstration": "reproduction-script-ready",
+    "release": "pending-user-github-remote"
+  }
+}

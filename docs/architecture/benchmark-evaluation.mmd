@@ -1,0 +1,7 @@
+flowchart TB
+  Fixtures[Stateful task fixtures] --> Strategies[Comparable strategies]
+  Strategies --> Runs[Execution runs]
+  Runs --> Assertions[Repository/state assertions]
+  Assertions --> Metrics[Success, burden, calls, duration, cost, recovery]
+  Metrics --> Policy[Oversight policy selection]
+  Policy --> Holdout[Frozen held-out qualification]

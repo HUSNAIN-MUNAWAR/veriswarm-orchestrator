@@ -1,0 +1,18 @@
+sequenceDiagram
+  actor User
+  participant API
+  participant O as Orchestrator
+  participant C as Codex SDK
+  participant W as Scoped Workspace
+  participant V as Independent Verifier
+  participant Store as Evidence Store
+  User->>API: submit goal
+  API->>O: create durable run
+  O->>O: validate DAG and policy
+  O->>C: run bounded task
+  C->>W: inspect and edit
+  C->>Store: stream execution events
+  O->>V: verify final state
+  V->>W: execute tests independently
+  V->>Store: hash test result and state
+  Store-->>API: trace, artifacts, metrics

@@ -1,0 +1,12 @@
+erDiagram
+  ORGANIZATIONS ||--o{ USERS : has
+  ORGANIZATIONS ||--o{ PROJECTS : owns
+  PROJECTS ||--o{ RUNS : contains
+  RUNS ||--o{ TASKS : schedules
+  TASKS ||--o{ TASK_DEPENDENCIES : has
+  RUNS ||--o{ AGENT_EVENTS : emits
+  RUNS ||--o{ ARTIFACTS : produces
+  RUNS ||--o{ APPROVAL_REQUESTS : requests
+  RUNS ||--o{ TEST_RESULTS : verifies
+  PROMPT_VERSIONS ||--o{ PROMPT_EXPERIMENTS : compares
+  QUALIFICATION_RUNS ||--o{ QUALIFICATION_RESULTS : reports

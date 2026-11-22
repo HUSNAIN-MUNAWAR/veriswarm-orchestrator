@@ -1,0 +1,18 @@
+flowchart TB
+  U[User / Operator] --> UI[Control Plane UI]
+  UI --> API[Authenticated API boundary]
+  API --> O[Durable Orchestrator]
+  O --> P[Planner + Policy Engine]
+  O --> S[Dependency Scheduler]
+  S --> C[Codex SDK Worker]
+  S --> M[Mock Provider for CI]
+  C --> W[Scoped temporary workspace]
+  M --> W
+  C --> E[Event Collector]
+  W --> V[Independent Verifier]
+  E --> V
+  V --> Q[Evaluation + Qualification]
+  O --> D[(FileStore / PostgreSQL target)]
+  E --> D
+  V --> D
+  Q --> D

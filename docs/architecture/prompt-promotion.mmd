@@ -1,0 +1,8 @@
+flowchart TD
+  Baseline[Frozen baseline] --> Dev[Development outcomes]
+  Dev --> Candidate[Codex-proposed candidate]
+  Candidate --> Compare[Common protocol comparison]
+  Compare --> Decision{No safety/correctness regression?}
+  Decision -->|no| Reject[Rejected]
+  Decision -->|yes| Freeze[Frozen candidate]
+  Freeze --> HeldOut[Held-out qualification]

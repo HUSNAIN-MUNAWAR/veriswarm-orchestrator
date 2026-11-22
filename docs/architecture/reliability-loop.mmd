@@ -1,0 +1,14 @@
+flowchart TD
+  A[Versioned prompt] --> B[Development fixture set]
+  B --> C[Worker execution]
+  C --> D[Independent evaluation]
+  D --> E[Failure analysis]
+  E --> F[Candidate revision]
+  F --> G{Safety + correctness regression?}
+  G -->|yes| R[Reject]
+  G -->|no| H[Freeze candidate]
+  H --> I[Untouched held-out set]
+  I --> J[One-sided lower bound]
+  J --> K{Target met?}
+  K -->|no| N[Inconclusive / not qualified]
+  K -->|yes| Q[Qualified for tested conditions]

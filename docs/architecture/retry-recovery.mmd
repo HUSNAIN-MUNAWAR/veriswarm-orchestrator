@@ -1,0 +1,9 @@
+stateDiagram-v2
+  [*] --> queued
+  queued --> running
+  running --> retry_pending: transient failure
+  retry_pending --> queued: attempts remain
+  retry_pending --> failed: exhausted
+  running --> awaiting_approval
+  awaiting_approval --> queued: approved / resume
+  awaiting_approval --> rejected: rejected

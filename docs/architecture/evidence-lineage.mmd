@@ -1,0 +1,10 @@
+flowchart LR
+  Prompt --> PromptHash[SHA-256]
+  PromptHash --> Session
+  Session --> Event[JSON event]
+  Event --> EventHash[SHA-256 chain record]
+  Workspace --> Diff[Changed-file set]
+  Diff --> Test[Test output + exit code]
+  Test --> StateHash[Final state hash]
+  EventHash --> Manifest[Run manifest]
+  StateHash --> Manifest

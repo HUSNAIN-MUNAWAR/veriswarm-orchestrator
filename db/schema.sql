@@ -1,0 +1,26 @@
+-- PostgreSQL target schema for replacing the local FileStore.
+create table if not exists organizations (id uuid primary key, name text not null, created_at timestamptz not null default now());
+create table if not exists users (id uuid primary key, organization_id uuid not null references organizations(id), email text not null, unique(organization_id,email));
+create table if not exists projects (id uuid primary key, organization_id uuid not null references organizations(id), name text not null);
+create table if not exists workflows (id uuid primary key, project_id uuid not null references projects(id), name text not null);
+create table if not exists workflow_versions (id uuid primary key, workflow_id uuid not null references workflows(id), version int not null, graph jsonb not null, unique(workflow_id,version));
+create table if not exists runs (id uuid primary key, workflow_version_id uuid references workflow_versions(id), project_id uuid references projects(id), goal text not null, status text not null, strategy text not null, risk_score numeric not null, version int not null default 0, workspace text not null, created_at timestamptz not null default now(), updated_at timestamptz not null default now());
+create table if not exists tasks (id uuid primary key, run_id uuid not null references runs(id), title text not null, role text not null, status text not null, attempts int not null default 0, max_attempts int not null, workspace text not null, result jsonb, unique(run_id,title));
+create table if not exists task_dependencies (task_id uuid references tasks(id), dependency_id uuid references tasks(id), primary key(task_id,dependency_id));
+create table if not exists agent_definitions (id uuid primary key, role text not null, prompt_version_id uuid, config jsonb not null default '{}');
+create table if not exists agent_sessions (id uuid primary key, run_id uuid references runs(id), task_id uuid references tasks(id), provider text not null, external_id text, started_at timestamptz, ended_at timestamptz);
+create table if not exists agent_events (id uuid primary key, run_id uuid references runs(id), task_id uuid references tasks(id), type text not null, payload jsonb not null, hash text not null, occurred_at timestamptz not null default now(), unique(run_id,hash));
+create table if not exists tool_executions (id uuid primary key, session_id uuid references agent_sessions(id), command text not null, exit_code int, output text, started_at timestamptz, ended_at timestamptz);
+create table if not exists approval_requests (id uuid primary key, run_id uuid references runs(id), task_id uuid references tasks(id), status text not null, reason text not null, decided_by uuid references users(id));
+create table if not exists artifacts (id uuid primary key, run_id uuid references runs(id), task_id uuid references tasks(id), kind text not null, path text not null, bytes bigint not null, created_at timestamptz not null default now());
+create table if not exists artifact_hashes (artifact_id uuid primary key references artifacts(id), algorithm text not null, digest text not null);
+create table if not exists test_results (id uuid primary key, run_id uuid references runs(id), command text not null, exit_code int not null, passed boolean not null, state_hash text not null);
+create table if not exists evaluation_datasets (id uuid primary key, name text not null, split text not null, frozen_at timestamptz);
+create table if not exists evaluation_cases (id uuid primary key, dataset_id uuid references evaluation_datasets(id), external_key text not null, input jsonb not null, expected_state jsonb not null);
+create table if not exists evaluation_runs (id uuid primary key, dataset_id uuid references evaluation_datasets(id), strategy text not null, config jsonb not null, created_at timestamptz not null default now());
+create table if not exists prompt_versions (id uuid primary key, role text not null, version int not null, content text not null, parent_id uuid references prompt_versions(id), status text not null, unique(role,version));
+create table if not exists prompt_experiments (id uuid primary key, baseline_id uuid references prompt_versions(id), candidate_id uuid references prompt_versions(id), evaluation_run_id uuid references evaluation_runs(id), decision text not null);
+create table if not exists oversight_policies (id uuid primary key, name text not null, config jsonb not null);
+create table if not exists qualification_runs (id uuid primary key, evaluation_run_id uuid references evaluation_runs(id), policy_id uuid references oversight_policies(id), target numeric not null, confidence numeric not null, held_out_frozen_at timestamptz);
+create table if not exists qualification_results (id uuid primary key, qualification_run_id uuid references qualification_runs(id), observed_rate numeric not null, lower_bound numeric not null, decision text not null, reason text not null);
+create table if not exists audit_events (id uuid primary key, organization_id uuid references organizations(id), actor_id uuid references users(id), action text not null, payload jsonb not null, created_at timestamptz not null default now());

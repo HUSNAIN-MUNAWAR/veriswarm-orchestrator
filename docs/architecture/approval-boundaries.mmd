@@ -1,0 +1,9 @@
+flowchart TB
+  Goal --> Planner
+  Planner --> ReadOnly[Research / review: read-only intent]
+  Planner --> Consequential[Worker: workspace write]
+  Consequential --> Gate{Approval policy}
+  Gate -->|approved| Execute[Execute scoped action]
+  Gate -->|rejected| Stop[Reject and audit]
+  Execute --> Verify[Independent verification]
+  ReadOnly --> Verify

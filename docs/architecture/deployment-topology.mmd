@@ -1,0 +1,9 @@
+flowchart LR
+  Browser --> Web[Static control plane]
+  Web --> API[Node API]
+  API --> Store[(Durable store)]
+  API --> Queue[Bounded in-process queue]
+  Queue --> Worker[Codex worker process]
+  Worker --> Sandbox[Temporary scoped workspace]
+  Sandbox --> Verifier[Independent test process]
+  Verifier --> Artifacts[(Artifact storage)]
