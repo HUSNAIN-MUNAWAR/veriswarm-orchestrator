@@ -1,0 +1,12 @@
+{
+  "runId": "bd74ae4d-865e-4815-9221-0f7a549f77e5",
+  "provider": "MockAgentProvider",
+  "status": "completed",
+  "metrics": {
+    "toolCalls": 4,
+    "durationMs": 587,
+    "estimatedCostUsd": 0.048
+  },
+  "verificationHash": "fc982e685fa311601191075140840e602f522ae080b9e1083029223e9eec9ba7",
+  "eventCount": 15
+}

@@ -1,0 +1,18 @@
+{
+  "commitSha": "working-tree-demo-no-commit",
+  "sdkRuntime": "MockAgentProvider (CI fixture)",
+  "provider": "MockAgentProvider",
+  "runId": "bd74ae4d-865e-4815-9221-0f7a549f77e5",
+  "goal": "Fix the seeded idempotency regression and leave no unauthorized files changed.",
+  "sessionIds": [
+    "mock-bd74ae4d-865e-4815-9221-0f7a549f77e5",
+    "mock-bd74ae4d-865e-4815-9221-0f7a549f77e5",
+    "mock-bd74ae4d-865e-4815-9221-0f7a549f77e5",
+    "mock-bd74ae4d-865e-4815-9221-0f7a549f77e5"
+  ],
+  "status": "completed",
+  "verificationHash": "fc982e685fa311601191075140840e602f522ae080b9e1083029223e9eec9ba7",
+  "events": 15,
+  "capturedAt": "2026-11-22T19:53:51.674Z",
+  "video": "not captured in this environment"
+}
