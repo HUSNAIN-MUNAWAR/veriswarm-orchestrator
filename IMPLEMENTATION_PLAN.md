@@ -14,7 +14,7 @@
 - [x] Research evidence package under `docs/research/` and machine-readable reports under `reports/`.
 - [x] Mermaid sources rendered to committed SVG architecture assets with a repeatable `npm run diagrams` command.
 - [x] README, demo guide, blocker conditions, and UI truth labels rebuilt around the actual implementation state.
-- [x] TypeScript typecheck, 12 integration/regression tests, actual benchmark, and browser capture completed successfully.
+- [x] TypeScript typecheck, 13 integration/regression tests, actual benchmark, and browser capture completed successfully.
 
 ## Deliberately not claimed
 
