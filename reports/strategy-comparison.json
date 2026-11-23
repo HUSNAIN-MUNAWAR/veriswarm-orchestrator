@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-11-23T16:54:25.931Z",
+  "comparison": [
+    {
+      "strategy": "single-worker",
+      "successRate": 1,
+      "reviewRate": 0,
+      "costUsd": 0.4319999999999999,
+      "toolCalls": 36
+    },
+    {
+      "strategy": "planner-worker",
+      "successRate": 1,
+      "reviewRate": 0,
+      "costUsd": 0.4319999999999999,
+      "toolCalls": 36
+    },
+    {
+      "strategy": "reviewed-worker",
+      "successRate": 1,
+      "reviewRate": 1,
+      "costUsd": 0.8160000000000003,
+      "toolCalls": 48
+    },
+    {
+      "strategy": "parallel-adjudicated",
+      "successRate": 1,
+      "reviewRate": 1,
+      "costUsd": 1.2,
+      "toolCalls": 60
+    },
+    {
+      "strategy": "risk-adaptive",
+      "successRate": 1,
+      "reviewRate": 1,
+      "costUsd": 0.8160000000000003,
+      "toolCalls": 48
+    }
+  ]
+}

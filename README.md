@@ -1,60 +1,102 @@
-# VeriSwarm
+# VeriSwarm — Evidence-Driven Multi-Agent Reliability & Deployment Qualification
 
-VeriSwarm is an evidence-aware multi-agent orchestration and qualification platform. It wraps a bounded Codex worker in deterministic workflow state, human approval, independent verification, and measurable evaluation.
+VeriSwarm is an evidence-aware multi-agent reliability lab. It wraps bounded workers in deterministic workflow state, human approval, independent verification, and reproducible evaluation. The current implementation demonstrates a functioning evidence and oversight framework; it does not claim a live-model or production qualification result.
 
 > Independent research-inspired implementation. Not affiliated with OpenAI, Scale AI, or Salesforce.
 
-## What works now
+## Product walkthrough
 
-- Real `@openai/codex-sdk` provider using `Codex.startThread().runStreamed()` with scoped workspace, disabled network search, timeout, approval policy, and event persistence.
-- Deterministic `MockAgentProvider` for CI/offline runs; it is explicitly labeled mock and never represents live Codex evidence.
-- Durable file-backed store for runs, tasks, events, approvals, artifacts, prompt versions, and evaluation records. PostgreSQL target DDL is in `db/schema.sql`.
-- Explicit state transitions, dependency DAG validation, bounded retries, cancellation states, and approval resume/reject behavior.
-- Independent verifier executes the fixture test itself, hashes the final workspace, and rejects unauthorized changes. Its evidence records added, changed, deleted, and content-preserving renamed files, reusable allowed-path rules, command exit status, and timeout status.
-- Control-plane UI at `http://localhost:4317` when the API is running, with overview, live trace, approvals, prompt lab, evaluation lab, and architecture views.
-- Fixture benchmark with strategy comparison and one-sided lower confidence bounds; insufficient samples are reported as inconclusive.
+The committed walkthrough is a real Playwright Chromium capture of the local control plane. It uses the deterministic fixture provider, so every frame is reproducible and clearly labelled as mock evidence.
 
-## Runtime visual evidence
+![VeriSwarm control plane walkthrough](docs/assets/demo/veriswarm-walkthrough.gif)
 
-The screenshots below were captured from the running local API and browser UI with the explicit `MockAgentProvider` boundary. They are distinct DOM views: the queue, task DAG, and event trace are not copies of one another.
+[Download the full research walkthrough MP4](docs/assets/demo/veriswarm-demo.mp4) · [Open the capture manifest](docs/assets/demo/capture-manifest.json)
 
-| View | Evidence |
-| --- | --- |
-| Live execution queue | ![Live execution queue](docs/demo/screenshots/live-execution.png) |
-| Task DAG | ![Task DAG](docs/demo/screenshots/task-dag.png) |
-| Agent trace | ![Agent trace](docs/demo/screenshots/agent-trace.png) |
+The visual storyline is **Task → Agent → Artifact → Independent Verification → Qualification**. The formerly duplicated live/DAG/trace figures are now separate persisted control-plane modes; see the [visual evidence audit](docs/research/VISUAL_EVIDENCE_AUDIT.md) and [figure provenance record](docs/research/FIGURE_PROVENANCE.md).
 
-Reproduce the capture with `py -3.12 scripts/capture_browser_evidence.py` while `npm run dev` is running. The script captures only rendered application DOM and does not add annotations or synthetic metrics.
+## What is implemented
 
-## Run the real working slice
+- A real `@openai/codex-sdk` provider using `Codex.startThread().runStreamed()` with a scoped workspace, disabled network search, timeout, approval policy, and persisted events.
+- A deterministic `MockAgentProvider` for CI, offline development, browser capture, and fixture evidence. Mock output is never presented as live Codex evidence.
+- Durable file-backed records for runs, tasks, events, approvals, artifacts, prompt versions, and evaluation results. PostgreSQL target DDL is in [`db/schema.sql`](db/schema.sql).
+- Explicit state transitions, dependency DAG validation, bounded retries with recovery events, cancellation, idempotent event persistence, approval resume/reject behavior, and independent verification.
+- A generic verifier that executes checks itself, hashes the final workspace, and rejects unauthorized changes, deletions, renames, missing outputs, timeouts, and path escapes.
+- A backend-driven dark control plane with command center, live execution DAG, event trace, approval center, prompt lab, evaluation lab, evidence inspector, and architecture map.
+- An actual isolated scheduler experiment: 60 development executions across five strategies, with held-out families declared but explicitly reported as `NOT EVALUATED`.
+- Rendered Mermaid SVG architecture artifacts under [`docs/assets/architecture`](docs/assets/architecture) generated from [`docs/architecture`](docs/architecture).
+
+## Quick start
 
 ```powershell
 npm install
 $env:VERISWARM_PROVIDER="mock"
-npm run demo
 npm run benchmark
 npm test
 npm run typecheck
 npm run dev
 ```
 
-Open `apps/web/index.html` directly or serve it from a static server while the API runs on port 4317. The API is intentionally separate from the static UI so the frontend always consumes real records.
+Open [http://localhost:4317](http://localhost:4317). The UI consumes the API's real records; do not open `apps/web/index.html` directly.
 
-To opt into a real Codex run, use an authenticated and isolated environment:
+To run the optional real Codex path in an authenticated, isolated environment:
 
 ```powershell
 $env:VERISWARM_PROVIDER="codex"
 npm run demo
 ```
 
-The Codex provider uses `workspace-write`, a temporary workspace, no network access, bounded timeout, and the configured approval policy. It fails explicitly if authentication or the runtime is unavailable. Do not use full host access for ordinary agents.
+The Codex adapter fails explicitly when authentication or the runtime is unavailable. Ordinary development uses the separated mock provider.
+
+## Browser evidence and diagrams
+
+The committed browser capture can be regenerated with Python 3.12, Playwright, Pillow, and `imageio-ffmpeg`:
+
+```powershell
+python -m pip install playwright pillow imageio-ffmpeg
+python -m playwright install chromium
+npm run showcase
+```
+
+`npm run showcase` starts an isolated API, seeds a fixture run and an approval-gated run, asserts the main UI flows in Chromium, captures eleven desktop/mobile screenshots, and produces an 8–12-second GIF plus a 60–90-second MP4 research walkthrough. It also records SHA-256 values and fails if the three focused live/DAG/trace screenshots become identical. It does not claim a live Codex run.
+
+Mermaid sources and their generated SVGs are kept together:
+
+```powershell
+npm run diagrams
+```
+
+The renderer uses a real headless browser and Mermaid ESM. Set `VERISWARM_MERMAID_URL` to a locally hosted Mermaid module when an offline render is required.
+
+## Control-plane views
+
+| View | Evidence shown |
+| --- | --- |
+| Command center | API-backed run counts, cost, strategy distribution, verification outcomes, and recent runs |
+| Live execution | Actual task dependencies, status transitions, selected task inspector, and event timeline |
+| Task DAG mode | Persisted dependency edges, task statuses, attempts, and selected task record |
+| Agent trace mode | Provider/model/prompt/session metadata, event hashes, workspace hashes, and independent verifier details |
+| Approval center | Pending decisions plus persisted approve/reject history; mutation requires native confirmation |
+| Prompt lab | Immutable prompt versions, hashes, and promotion status |
+| Evaluation lab | Benchmark sample sizes, rates, confidence bounds, review burden, cost proxy, and qualification status |
+| Evidence explorer | Artifact metadata, verifier record, hashes, event stream, and run selection |
+| Architecture | Interactive implementation/proposed boundary map plus rendered source diagrams |
+
+![Command center](docs/assets/screenshots/01-overview.png)
+
+![Live execution](docs/assets/screenshots/02-live-execution.png)
+
+![Task DAG](docs/assets/screenshots/03-task-dag.png)
+
+![Agent trace](docs/assets/screenshots/04-agent-trace.png)
+
+![Approval center](docs/assets/screenshots/05-approval-center.png)
 
 ## Architecture
 
 ```mermaid
 flowchart LR
   Goal --> Plan[Validated DAG]
-  Plan --> Worker[Codex SDK worker]
+  Plan --> Worker[Codex SDK or mock worker]
   Worker --> Events[Structured events]
   Worker --> Verify[Independent verifier]
   Verify --> Evidence[Hash-linked artifacts]
@@ -62,18 +104,27 @@ flowchart LR
   Qualify --> Deliver[Recorded delivery]
 ```
 
-The full sources are in [`docs/architecture`](docs/architecture/README.md), including system architecture, state machine, execution sequence, approval boundaries, evidence lineage, retries, prompt promotion, benchmark evaluation, ERD, and deployment topology. Rendered assets are intentionally not claimed until a Mermaid renderer is available; the source is kept as the authoritative artifact.
+The complete source/rendered set covers system architecture, state machine, execution sequence, approval boundaries, evidence lineage, retries, reliability, prompt promotion, benchmark evaluation, ERD, and deployment topology. Start at [`docs/architecture/README.md`](docs/architecture/README.md).
 
-## Demo fixture
+## Demo fixture and evaluation
 
-`fixtures/order-service` contains an intentional idempotency regression. `npm run demo` copies it into `data/demo/order-service`, runs the provider, independently executes the test, and writes a manifest. The worker's verbal response is not used to decide success.
+`fixtures/order-service` contains an intentional idempotency regression. `npm run demo` copies it into `data/demo/order-service`, runs the selected provider, independently executes the test, and writes a manifest. The worker's verbal response is not used to decide success.
 
-The verifier is intentionally narrow: the fixture command and allowed paths are explicit, and the final workspace is compared with a pre-run snapshot. A passing worker response cannot bypass a failed test, timeout, deleted test file, or out-of-scope workspace change.
+See [`RESEARCH_ALIGNMENT.md`](RESEARCH_ALIGNMENT.md) and [`EVALUATION_METHODOLOGY.md`](EVALUATION_METHODOLOGY.md) for the research framing. This repository does not claim a CRM-Agent-Bench score, a production qualification, or a novel research result from the small fixture.
 
-## Research alignment and limits
+## Research results and evidence
 
-See [`RESEARCH_ALIGNMENT.md`](RESEARCH_ALIGNMENT.md) and [`EVALUATION_METHODOLOGY.md`](EVALUATION_METHODOLOGY.md). READY's separation of development policy selection from held-out qualification informs the evaluator. CRM-Agent-Bench's stateful assertion pattern informs the fixture. Codex SDK and non-interactive documentation inform the adapter and JSONL fallback. This repository does not claim a CRM-Agent-Bench score, a production qualification, or a novel research result from the small fixture.
+The latest `npm run benchmark` run executed 60 isolated development cases with `MockAgentProvider`: 12 order-idempotency seeds across five real scheduler workflows. All five strategies verified 100% of this fixture family; measured total cost proxies ranged from `$0.432` for single/planner workers to `$1.200` for parallel adjudication. The seven declared held-out problem families were not run, so the qualification status is `NOT EVALUATED`.
 
-## Known limits
+Machine-readable results are in [`reports/`](reports), and the research mapping is in [`docs/research/`](docs/research). The report records provider identity, run IDs, verification exit codes, workspace hashes, review status, recovery events, tool calls, and cost assumptions.
 
-This first vertical slice uses a file store and an in-process scheduler. It has no identity provider, production database, Redis queue, Python evaluator, or authenticated live Codex smoke capture. Browser screenshots are now captured for the mock-provider runtime; no video or live-provider claim is made. Those are explicit blockers in [`BLOCKERS.md`](BLOCKERS.md), not hidden behind fake UI claims.
+The visual evidence package is audited separately: [`VISUAL_EVIDENCE_AUDIT.md`](docs/research/VISUAL_EVIDENCE_AUDIT.md) explains the capture-state repair, while [`FIGURE_PROVENANCE.md`](docs/research/FIGURE_PROVENANCE.md) maps every figure to its source record and truth boundary.
+
+## Truth conditions and limits
+
+- The committed screenshots, GIF, MP4, and evaluation records are deterministic fixture evidence from `MockAgentProvider`.
+- The live Codex adapter is implemented but has not been represented as successful evidence without a configured authenticated runtime.
+- The current profile uses a file store and in-process scheduler. PostgreSQL/Redis, identity, OpenTelemetry exporters, the Python evaluator, and production deployment are target work rather than shipped infrastructure.
+- The repository has a GitHub remote, but this project is not a hosted production deployment. Run it locally at `http://localhost:4317`.
+
+See [`BLOCKERS.md`](BLOCKERS.md) for the explicit boundary between implemented, tested, experimental, and planned behavior.

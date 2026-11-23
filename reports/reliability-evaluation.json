@@ -1,0 +1,11 @@
+{
+  "generatedAt": "2026-11-23T16:54:25.931Z",
+  "qualification": {
+    "decision": "not-qualified",
+    "observedRate": 1,
+    "lowerBound": 0.7574992425007574,
+    "reason": "Development executions completed, but no held-out cases were run; this report cannot support deployment qualification.",
+    "status": "NOT EVALUATED"
+  },
+  "developmentOnly": true
+}

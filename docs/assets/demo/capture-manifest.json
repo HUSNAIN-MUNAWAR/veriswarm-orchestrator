@@ -1,0 +1,89 @@
+{
+  "capture": "Playwright Chromium",
+  "baseUrl": "http://127.0.0.1:4321",
+  "viewport": "1440x900",
+  "runId": "36e3db20-3e09-4471-9250-321b84badeeb",
+  "provider": "MockAgentProvider",
+  "truth": "deterministic fixture evidence",
+  "screenshotIdentityCheck": "02/03/04 SHA-256 values are required to differ",
+  "screenshotEvidence": [
+    {
+      "file": "01-overview.png",
+      "sha256": "ee077545f91f59729446d77f220599e1a85d6eba2f88af2447f6fd575d2d9fa9",
+      "intent": "command center and truth banner"
+    },
+    {
+      "file": "02-live-execution.png",
+      "sha256": "eec877b1c3292f34d76a715c9e3eeb4e5499b4ba05aa3139a210f74db13ca9ac",
+      "intent": "persisted live execution state and transitions"
+    },
+    {
+      "file": "03-task-dag.png",
+      "sha256": "0513052b2d54cd5ce289f3238a7f8d8df7b522977d5214adfc2967c76b2a5dc3",
+      "intent": "persisted dependency graph and task states"
+    },
+    {
+      "file": "04-agent-trace.png",
+      "sha256": "c3394e455b4002086ec64c6bce2ef085f2ff2f3f0aca4a28b585ff97720ff020",
+      "intent": "provider/tool provenance and independent verifier"
+    },
+    {
+      "file": "05-approval-center.png",
+      "sha256": "f039a520440929663bc99f316a756d85388098e2b22eecf603683e295d197a01",
+      "intent": "approval interruption"
+    },
+    {
+      "file": "06-prompt-lab.png",
+      "sha256": "4b3ddac6006ddf42db24db19a06e1714fca53c4c90caea708960c4b0a29cd99f",
+      "intent": "versioned instructions"
+    },
+    {
+      "file": "07-evaluation-lab.png",
+      "sha256": "c8973273478a4c6ae5c94e2711697f0027f5a27660543dc6a2dec5c742e095df",
+      "intent": "measured development comparison"
+    },
+    {
+      "file": "08-architecture.png",
+      "sha256": "ca31acbb6e8d447efdd5f05dd1213d3a6d9776b8a0323a58d6ff44da98fc3427",
+      "intent": "implemented/proposed boundary"
+    },
+    {
+      "file": "09-reproducibility.png",
+      "sha256": "3fa25dc49e31da114564840362ff9e6af6cba197f0b1c3d58b2c671763052b1c",
+      "intent": "experiment contract and limits"
+    },
+    {
+      "file": "10-evidence-inspector.png",
+      "sha256": "470debf4deb8ef6e23b9c6e4d669df865b510625998698c174c5dcde3aeda9f7",
+      "intent": "artifact and verifier evidence"
+    },
+    {
+      "file": "11-mobile.png",
+      "sha256": "df55b3937728a436c98b0f7c6fd0475052cb12147624bd460577c3b7134aeab4",
+      "intent": "responsive control plane"
+    }
+  ],
+  "gifDurationSeconds": 12.01,
+  "videoDurationSeconds": 70.2,
+  "mediaIntent": {
+    "gif": "8-12 second README preview",
+    "mp4": "60-90 second complete research walkthrough"
+  },
+  "screenshots": [
+    "01-overview.png",
+    "02-live-execution.png",
+    "03-task-dag.png",
+    "04-agent-trace.png",
+    "05-approval-center.png",
+    "06-prompt-lab.png",
+    "07-evaluation-lab.png",
+    "08-architecture.png",
+    "09-reproducibility.png",
+    "10-evidence-inspector.png",
+    "11-mobile.png"
+  ],
+  "video": "docs\\assets\\demo\\veriswarm-demo.mp4",
+  "gif": "docs\\assets\\demo\\veriswarm-walkthrough.gif",
+  "poster": "docs\\assets\\demo\\demo-poster.png",
+  "capturedAt": "2026-11-23T16:50:47Z"
+}

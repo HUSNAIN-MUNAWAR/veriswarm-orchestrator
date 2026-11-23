@@ -1,12 +1,15 @@
 {
-  "runId": "6d9657f4-d5e4-4c43-9def-f959a24140a4",
+  "runId": "4cd4ca8e-61a2-4510-980f-813c7129dfdd",
   "provider": "MockAgentProvider",
   "status": "completed",
   "metrics": {
     "toolCalls": 4,
-    "durationMs": 263,
-    "estimatedCostUsd": 0.048
+    "durationMs": 2970,
+    "estimatedCostUsd": 0.048,
+    "costSource": "mock provider; no model billing",
+    "humanReviewCostUsd": 0.02,
+    "totalEstimatedCostUsd": 0.068
   },
-  "verificationHash": "2369ac5c416efe87a7fd137d12b776058804a044881801ff0cbd2e9c5ef29972",
+  "verificationHash": "fc982e685fa311601191075140840e602f522ae080b9e1083029223e9eec9ba7",
   "eventCount": 15
 }

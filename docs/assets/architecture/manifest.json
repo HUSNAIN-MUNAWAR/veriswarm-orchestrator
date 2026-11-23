@@ -1,0 +1,46 @@
+[
+  {
+    "source": "docs\\architecture\\approval-boundaries.mmd",
+    "output": "docs\\assets\\architecture\\approval-boundaries.svg"
+  },
+  {
+    "source": "docs\\architecture\\benchmark-evaluation.mmd",
+    "output": "docs\\assets\\architecture\\benchmark-evaluation.svg"
+  },
+  {
+    "source": "docs\\architecture\\database-erd.mmd",
+    "output": "docs\\assets\\architecture\\database-erd.svg"
+  },
+  {
+    "source": "docs\\architecture\\deployment-topology.mmd",
+    "output": "docs\\assets\\architecture\\deployment-topology.svg"
+  },
+  {
+    "source": "docs\\architecture\\evidence-lineage.mmd",
+    "output": "docs\\assets\\architecture\\evidence-lineage.svg"
+  },
+  {
+    "source": "docs\\architecture\\execution-sequence.mmd",
+    "output": "docs\\assets\\architecture\\execution-sequence.svg"
+  },
+  {
+    "source": "docs\\architecture\\prompt-promotion.mmd",
+    "output": "docs\\assets\\architecture\\prompt-promotion.svg"
+  },
+  {
+    "source": "docs\\architecture\\reliability-loop.mmd",
+    "output": "docs\\assets\\architecture\\reliability-loop.svg"
+  },
+  {
+    "source": "docs\\architecture\\retry-recovery.mmd",
+    "output": "docs\\assets\\architecture\\retry-recovery.svg"
+  },
+  {
+    "source": "docs\\architecture\\system-architecture.mmd",
+    "output": "docs\\assets\\architecture\\system-architecture.svg"
+  },
+  {
+    "source": "docs\\architecture\\workflow-state-machine.mmd",
+    "output": "docs\\assets\\architecture\\workflow-state-machine.svg"
+  }
+]
