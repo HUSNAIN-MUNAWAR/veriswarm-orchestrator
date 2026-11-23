@@ -1,0 +1,27 @@
+{
+  "capture": "Playwright Chromium",
+  "baseUrl": "http://127.0.0.1:4321",
+  "viewport": "1440x900",
+  "runId": "39d2930e-bca5-4bfe-b418-8df3b4d9f05f",
+  "provider": "MockAgentProvider",
+  "truth": "deterministic fixture evidence",
+  "gifDurationSeconds": 12,
+  "videoIntent": "60-120 second research walkthrough replay",
+  "screenshots": [
+    "01-overview.png",
+    "02-live-execution.png",
+    "03-task-dag.png",
+    "04-agent-trace.png",
+    "05-approval-center.png",
+    "06-prompt-lab.png",
+    "07-evaluation-lab.png",
+    "08-architecture.png",
+    "09-reproducibility.png",
+    "10-evidence-inspector.png",
+    "11-mobile.png"
+  ],
+  "video": "docs\\assets\\demo\\veriswarm-demo.mp4",
+  "gif": "docs\\assets\\demo\\veriswarm-walkthrough.gif",
+  "poster": "docs\\assets\\demo\\demo-poster.png",
+  "capturedAt": "2026-11-23T12:14:24Z"
+}

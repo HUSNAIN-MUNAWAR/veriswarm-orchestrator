@@ -3,22 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09111f" />
     <title>VeriSwarm · Evidence Control Plane</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <div class="shell">
-      <aside class="sidebar">
-        <div class="brand"><span class="brand-mark">V</span><div><strong>VeriSwarm</strong><small>evidence control plane</small></div></div>
-        <nav><button class="nav active" data-view="overview">Overview</button><button class="nav" data-view="runs">Live execution</button><button class="nav" data-view="approvals">Approval center</button><button class="nav" data-view="prompts">Prompt lab</button><button class="nav" data-view="evaluation">Evaluation lab</button><button class="nav" data-view="architecture">Architecture</button></nav>
-        <div class="side-note"><span class="pulse"></span><span id="provider">checking runtime</span></div>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <div class="brand" aria-label="VeriSwarm home">
+          <span class="brand-mark">V</span>
+          <span class="brand-copy"><strong>VeriSwarm</strong><small>evidence control plane</small></span>
+        </div>
+        <div class="workspace-switcher"><span class="workspace-dot"></span><span><b>Research workspace</b><small>local / protected</small></span><span class="chevron">⌄</span></div>
+        <nav class="nav-stack">
+          <p class="nav-label">Operate</p>
+          <button class="nav-item active" data-view="overview"><span class="nav-icon">⌂</span>Command center</button>
+          <button class="nav-item" data-view="live"><span class="nav-icon">◉</span>Live execution<span class="nav-count" id="active-count">0</span></button>
+          <button class="nav-item" data-view="approvals"><span class="nav-icon">✓</span>Approval center<span class="nav-count" id="approval-count">0</span></button>
+          <p class="nav-label">Understand</p>
+          <button class="nav-item" data-view="prompts"><span class="nav-icon">✦</span>Prompt lab</button>
+          <button class="nav-item" data-view="evaluation"><span class="nav-icon">◒</span>Evaluation lab</button>
+          <button class="nav-item" data-view="evidence"><span class="nav-icon">⌁</span>Evidence explorer</button>
+          <button class="nav-item" data-view="architecture"><span class="nav-icon">⌘</span>Architecture</button>
+          <button class="nav-item" data-view="reproducibility"><span class="nav-icon">▣</span>Reproducibility</button>
+        </nav>
+        <div class="sidebar-bottom"><div class="runtime-card"><span class="status-dot" id="runtime-dot"></span><div><b id="runtime-label">Runtime checking</b><small id="runtime-detail">Connecting to API…</small></div></div><span class="build-label">VERISWARM 0.2 · LOCAL</span></div>
       </aside>
-      <main>
-        <header><div><p class="eyebrow">AGENT OPERATIONS / 23 NOV 2026</p><h1 id="page-title">Reliable work, with receipts.</h1><p class="subhead">Coordinate Codex workers, independent verification, and measured qualification in one traceable loop.</p></div><button class="primary" id="new-run">+ New run</button></header>
-        <section id="content"></section>
+      <main class="main-shell">
+        <header class="topbar">
+          <div class="breadcrumb"><span>VeriSwarm</span><i>/</i><b id="breadcrumb-view">Command center</b></div>
+          <div class="topbar-actions"><div class="demo-chip" id="provider-chip"><span class="chip-pulse"></span><span id="provider-label">DEMO MODE</span><small id="provider-subtitle">deterministic mock provider</small></div><button class="icon-action" id="refresh-button" aria-label="Refresh data" title="Refresh data">↻</button><button class="avatar" aria-label="Operator profile">HM</button></div>
+        </header>
+        <section class="page-header"><div><p class="eyebrow" id="page-eyebrow">OPERATIONS / LIVE SYSTEM</p><h1 id="page-title">Reliable work, with receipts.</h1><p class="page-summary" id="page-summary">Coordinate bounded agents, independent verification, and measured qualification in one traceable loop.</p></div><button class="primary-button" id="new-run"><span>＋</span> New workflow</button></section>
+        <div class="notice-banner" id="truth-banner"><span class="notice-icon">i</span><span><b>DEMO MODE — DETERMINISTIC MOCK PROVIDER</b><span>Every result is reproducible fixture evidence, not a live Codex claim.</span></span><button class="notice-close" aria-label="Dismiss notice">×</button></div>
+        <section id="content" aria-live="polite"></section>
+        <footer class="footer"><span>Evidence-first orchestration</span><span>·</span><span id="last-updated">Waiting for first sync</span><span class="footer-spacer"></span><span>Sandbox: workspace-write</span><span>·</span><span>Network: disabled</span></footer>
       </main>
     </div>
-    <dialog id="run-dialog"><form method="dialog" id="run-form"><div class="dialog-head"><div><p class="eyebrow">CREATE WORKFLOW RUN</p><h2>Send a bounded goal</h2></div><button class="icon-button" value="cancel">×</button></div><label>Goal<textarea name="goal" rows="4">Fix the seeded idempotency regression in the order service and verify the final repository state.</textarea></label><label>Risk score<input type="range" name="riskScore" min="0" max="1" step="0.05" value="0.55" /><span class="range-value">0.55</span></label><p class="form-help">The scheduler uses risk, verification availability, and prior failures to choose a strategy.</p><button class="primary" value="default">Create and queue</button></form></dialog>
+
+    <dialog id="run-dialog" class="modal"><form method="dialog" id="run-form"><div class="modal-head"><div><p class="eyebrow">CREATE WORKFLOW RUN</p><h2>Send a bounded goal</h2><p class="muted">The orchestrator will plan, execute, verify, and record the result.</p></div><button class="close-button" value="cancel" aria-label="Close">×</button></div><label class="field-label">Goal<textarea name="goal" rows="4" required>Fix the seeded idempotency regression in the order service and verify the final repository state.</textarea></label><div class="form-grid"><label class="field-label">Risk score<input type="range" name="riskScore" min="0" max="1" step="0.05" value="0.55" /><span class="range-readout">0.55 · medium risk</span></label><label class="toggle-label"><input type="checkbox" name="requiresApproval" /><span class="toggle-track"></span><span><b>Require approval</b><small>Pause before the workspace write.</small></span></label></div><p class="form-help">The workspace is copied per run. The verifier independently executes the fixture test and rejects unauthorized files.</p><div class="modal-actions"><button class="secondary-button" value="cancel">Cancel</button><button class="primary-button" id="submit-run" value="default">Create and queue</button></div></form></dialog>
+    <div class="toast" id="toast" role="status"></div>
     <script type="module" src="/app.js"></script>
   </body>
 </html>

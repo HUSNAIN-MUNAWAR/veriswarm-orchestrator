@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-11-23T12:17:36.662Z",
+  "status": "NOT EVALUATED",
+  "reason": "Development executions completed, but no held-out cases were run; this report cannot support deployment qualification.",
+  "heldOutCases": 7,
+  "assumptions": [
+    "deterministic mock provider",
+    "single evaluated task family",
+    "held-out task families are declared but not evaluated",
+    "cost is a tool-call proxy, not provider billing",
+    "no CRM-Agent-Bench checkout"
+  ]
+}

@@ -10,7 +10,9 @@
     "test": "node node_modules/tsx/dist/cli.mjs --test tests/**/*.test.ts",
     "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
     "demo": "node node_modules/tsx/dist/cli.mjs scripts/run-demo.ts",
-    "benchmark": "node node_modules/tsx/dist/cli.mjs scripts/run-benchmark.ts"
+    "benchmark": "node node_modules/tsx/dist/cli.mjs scripts/run-benchmark.ts",
+    "showcase": "py -3.12 scripts/capture_showcase.py",
+    "diagrams": "py -3.12 scripts/render_diagrams.py"
   },
   "dependencies": {
     "@openai/codex-sdk": "^0.171.0",

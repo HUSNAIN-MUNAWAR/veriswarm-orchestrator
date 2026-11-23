@@ -9,3 +9,5 @@ dist/
 .openai/
 *.log
 *.tgz
+*.pyc
+__pycache__/

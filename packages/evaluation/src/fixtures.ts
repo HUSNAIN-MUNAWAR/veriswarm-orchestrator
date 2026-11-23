@@ -1,9 +1,13 @@
-import type { Outcome } from "./index.ts";
-import type { Strategy } from "../../contracts/src/index.ts";
+export type TaskSuiteCase = { id: string; family: string; split: "development" | "held-out"; status: "evaluated" | "not-evaluated"; fixturePath?: string; goal: string; allowedChangedFiles?: string[] };
 
-export const fixtureCases = Array.from({ length: 12 }, (_, index) => ({ id: `order-idempotency-${index + 1}`, goal: "Fix duplicate order processing while preserving the committed order state." }));
+export const fixtureCases: TaskSuiteCase[] = Array.from({ length: 12 }, (_, index) => ({ id: `order-idempotency-${index + 1}`, family: "idempotency", split: "development", status: "evaluated", fixturePath: "fixtures/order-service", goal: "Fix duplicate order processing while preserving the committed order state.", allowedChangedFiles: ["src/orderService.js"] }));
 
-export function fixtureEvaluation(): Record<Strategy, Outcome[]> {
-  const strategies: Strategy[] = ["single-worker", "planner-worker", "reviewed-worker", "parallel-adjudicated", "risk-adaptive"];
-  return Object.fromEntries(strategies.map((strategy) => [strategy, fixtureCases.map((item, index) => ({ caseId: item.id, success: strategy === "single-worker" ? index !== 2 : true, reviewed: ["reviewed-worker", "parallel-adjudicated", "risk-adaptive"].includes(strategy), costUsd: strategy === "single-worker" ? 0.012 : strategy === "planner-worker" ? 0.02 : 0.034, toolCalls: strategy === "single-worker" ? 2 : strategy === "planner-worker" ? 3 : 5, recovered: index === 2 && strategy !== "single-worker" }))])) as Record<Strategy, Outcome[]>;
-}
+export const taskSuite: TaskSuiteCase[] = [...fixtureCases, ...[
+  ["concurrency-race", "Concurrency race handling"],
+  ["authorization-policy", "Authorization policy enforcement"],
+  ["api-correctness", "API contract correctness"],
+  ["workflow-state", "Workflow state transition regression"],
+  ["data-consistency", "Data consistency failure"],
+  ["failure-recovery", "Failure recovery scenario"],
+  ["workspace-scope", "Unexpected workspace modification"],
+].map(([id, goal]) => ({ id: `heldout-${id}`, family: id, split: "held-out" as const, status: "not-evaluated" as const, goal: `Evaluate ${goal.toLowerCase()} under an isolated enterprise fixture.` }))];
