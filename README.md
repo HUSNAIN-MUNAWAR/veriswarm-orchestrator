@@ -10,7 +10,7 @@ VeriSwarm is an evidence-aware multi-agent orchestration and qualification platf
 - Deterministic `MockAgentProvider` for CI/offline runs; it is explicitly labeled mock and never represents live Codex evidence.
 - Durable file-backed store for runs, tasks, events, approvals, artifacts, prompt versions, and evaluation records. PostgreSQL target DDL is in `db/schema.sql`.
 - Explicit state transitions, dependency DAG validation, bounded retries, cancellation states, and approval resume/reject behavior.
-- Independent verifier executes the fixture test itself, hashes the final workspace, and rejects unauthorized changed files.
+- Independent verifier executes the fixture test itself, hashes the final workspace, and rejects unauthorized changes. Its evidence records added, changed, deleted, and content-preserving renamed files, reusable allowed-path rules, command exit status, and timeout status.
 - Control-plane UI at `http://localhost:4317` when the API is running, with overview, live trace, approvals, prompt lab, evaluation lab, and architecture views.
 - Fixture benchmark with strategy comparison and one-sided lower confidence bounds; insufficient samples are reported as inconclusive.
 
@@ -55,6 +55,8 @@ The full sources are in [`docs/architecture`](docs/architecture/README.md), incl
 ## Demo fixture
 
 `fixtures/order-service` contains an intentional idempotency regression. `npm run demo` copies it into `data/demo/order-service`, runs the provider, independently executes the test, and writes a manifest. The worker's verbal response is not used to decide success.
+
+The verifier is intentionally narrow: the fixture command and allowed paths are explicit, and the final workspace is compared with a pre-run snapshot. A passing worker response cannot bypass a failed test, timeout, deleted test file, or out-of-scope workspace change.
 
 ## Research alignment and limits
 
