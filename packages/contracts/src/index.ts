@@ -21,4 +21,8 @@ export type StoreData = { runs: Run[]; tasks: Task[]; events: AgentEvent[]; arti
 export type EvaluationRecord = { id: string; strategy: Strategy; split: "development" | "held-out"; outcomes: Array<{ caseId: string; success: boolean; reviewed: boolean; costUsd: number; toolCalls: number; recovered: boolean }>; createdAt: string };
 export type AgentExecutionContext = { runId: string; taskId: string; goal: string; workspace: string; role: AgentRole; prompt: string; promptVersionId?: string; timeoutMs: number; maxAttempts: number; approvalRequired: boolean };
 export type AgentExecutionResult = { provider: "codex-sdk" | "codex-cli" | "mock"; model?: string; promptVersionId?: string; sessionId: string; finalResponse: string; events: Array<{ type: string; payload: Record<string, unknown> }>; changedFiles: string[]; toolCalls: number; tokens?: number; durationMs: number; exitCode?: number; costSource?: string };
-export type VerifierResult = { passed: boolean; command: string; stdout: string; stderr: string; exitCode: number; checkedFiles: string[]; unauthorizedFiles: string[]; deletedFiles?: string[]; missingFiles?: string[]; pathEscapes?: string[]; timedOut?: boolean; durationMs?: number; stateHash: string };
+export type WorkspaceChange =
+  | { kind: "added" | "changed" | "deleted"; path: string; sha256?: string }
+  | { kind: "renamed"; from: string; to: string; sha256: string };
+export type VerifierResult = { passed: boolean; command: string; stdout: string; stderr: string; exitCode: number; checkedFiles: string[]; unauthorizedFiles: string[]; deletedFiles?: string[]; missingFiles?: string[]; pathEscapes?: string[]; timedOut?: boolean; durationMs?: number; stateHash: string; changes?: WorkspaceChange[]; allowedPathRules?: string[] };
+
