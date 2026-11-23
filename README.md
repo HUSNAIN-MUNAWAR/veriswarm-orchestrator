@@ -12,6 +12,8 @@ The committed walkthrough is a real Playwright Chromium capture of the local con
 
 [Download the full research walkthrough MP4](docs/assets/demo/veriswarm-demo.mp4) · [Open the capture manifest](docs/assets/demo/capture-manifest.json)
 
+The visual storyline is **Task → Agent → Artifact → Independent Verification → Qualification**. The formerly duplicated live/DAG/trace figures are now separate persisted control-plane modes; see the [visual evidence audit](docs/research/VISUAL_EVIDENCE_AUDIT.md) and [figure provenance record](docs/research/FIGURE_PROVENANCE.md).
+
 ## What is implemented
 
 - A real `@openai/codex-sdk` provider using `Codex.startThread().runStreamed()` with a scoped workspace, disabled network search, timeout, approval policy, and persisted events.
@@ -55,7 +57,7 @@ python -m playwright install chromium
 npm run showcase
 ```
 
-`npm run showcase` starts an isolated API, seeds a fixture run and an approval-gated run, asserts the main UI flows in Chromium, captures eleven desktop/mobile screenshots, and produces a 12-second GIF plus a 60–120-second MP4 research walkthrough. It does not claim a live Codex run.
+`npm run showcase` starts an isolated API, seeds a fixture run and an approval-gated run, asserts the main UI flows in Chromium, captures eleven desktop/mobile screenshots, and produces an 8–12-second GIF plus a 60–90-second MP4 research walkthrough. It also records SHA-256 values and fails if the three focused live/DAG/trace screenshots become identical. It does not claim a live Codex run.
 
 Mermaid sources and their generated SVGs are kept together:
 
@@ -71,6 +73,8 @@ The renderer uses a real headless browser and Mermaid ESM. Set `VERISWARM_MERMAI
 | --- | --- |
 | Command center | API-backed run counts, cost, strategy distribution, verification outcomes, and recent runs |
 | Live execution | Actual task dependencies, status transitions, selected task inspector, and event timeline |
+| Task DAG mode | Persisted dependency edges, task statuses, attempts, and selected task record |
+| Agent trace mode | Provider/model/prompt/session metadata, event hashes, workspace hashes, and independent verifier details |
 | Approval center | Pending decisions plus persisted approve/reject history; mutation requires native confirmation |
 | Prompt lab | Immutable prompt versions, hashes, and promotion status |
 | Evaluation lab | Benchmark sample sizes, rates, confidence bounds, review burden, cost proxy, and qualification status |
@@ -80,6 +84,10 @@ The renderer uses a real headless browser and Mermaid ESM. Set `VERISWARM_MERMAI
 ![Command center](docs/assets/screenshots/01-overview.png)
 
 ![Live execution](docs/assets/screenshots/02-live-execution.png)
+
+![Task DAG](docs/assets/screenshots/03-task-dag.png)
+
+![Agent trace](docs/assets/screenshots/04-agent-trace.png)
 
 ![Approval center](docs/assets/screenshots/05-approval-center.png)
 
@@ -109,6 +117,8 @@ See [`RESEARCH_ALIGNMENT.md`](RESEARCH_ALIGNMENT.md) and [`EVALUATION_METHODOLOG
 The latest `npm run benchmark` run executed 60 isolated development cases with `MockAgentProvider`: 12 order-idempotency seeds across five real scheduler workflows. All five strategies verified 100% of this fixture family; measured total cost proxies ranged from `$0.432` for single/planner workers to `$1.200` for parallel adjudication. The seven declared held-out problem families were not run, so the qualification status is `NOT EVALUATED`.
 
 Machine-readable results are in [`reports/`](reports), and the research mapping is in [`docs/research/`](docs/research). The report records provider identity, run IDs, verification exit codes, workspace hashes, review status, recovery events, tool calls, and cost assumptions.
+
+The visual evidence package is audited separately: [`VISUAL_EVIDENCE_AUDIT.md`](docs/research/VISUAL_EVIDENCE_AUDIT.md) explains the capture-state repair, while [`FIGURE_PROVENANCE.md`](docs/research/FIGURE_PROVENANCE.md) maps every figure to its source record and truth boundary.
 
 ## Truth conditions and limits
 

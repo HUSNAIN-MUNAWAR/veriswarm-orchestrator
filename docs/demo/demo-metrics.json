@@ -1,10 +1,10 @@
 {
-  "runId": "a3820e1a-a20b-452e-b8d6-e4f267b6915b",
+  "runId": "4cd4ca8e-61a2-4510-980f-813c7129dfdd",
   "provider": "MockAgentProvider",
   "status": "completed",
   "metrics": {
     "toolCalls": 4,
-    "durationMs": 460,
+    "durationMs": 2970,
     "estimatedCostUsd": 0.048,
     "costSource": "mock provider; no model billing",
     "humanReviewCostUsd": 0.02,

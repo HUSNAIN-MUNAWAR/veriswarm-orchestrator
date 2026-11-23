@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-23T12:17:36.662Z",
+  "generatedAt": "2026-11-23T16:54:25.931Z",
   "dataset": "repository-owned order idempotency fixtures executed through the durable scheduler",
   "provider": "MockAgentProvider",
   "executionMode": "actual isolated fixture executions; deterministic provider",

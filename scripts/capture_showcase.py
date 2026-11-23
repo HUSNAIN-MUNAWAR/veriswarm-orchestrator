@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
+import re
 import shutil
 import subprocess
 import time
@@ -67,6 +69,15 @@ def seed(page, requires_approval: bool = False) -> str:
     return response.json()["id"]
 
 
+def media_duration(path: Path, ffmpeg: Path) -> float:
+    probe = subprocess.run([str(ffmpeg), "-i", str(path)], capture_output=True, text=True)
+    match = re.search(r"Duration: (\d+):(\d+):(\d+(?:\.\d+)?)", probe.stderr)
+    if not match:
+        raise RuntimeError(f"Could not read media duration from {path}")
+    hours, minutes, seconds = match.groups()
+    return round(int(hours) * 3600 + int(minutes) * 60 + float(seconds), 2)
+
+
 def main() -> None:
     SCREENSHOTS.mkdir(parents=True, exist_ok=True)
     DEMO_ASSETS.mkdir(parents=True, exist_ok=True)
@@ -96,11 +107,15 @@ def main() -> None:
             page.screenshot(path=str(SCREENSHOTS / "01-overview.png"), full_page=True)
 
             click_view(page, "Live execution")
-            assert_visible(page, "Execution DAG")
+            assert_visible(page, "Live execution state")
+            page.locator("#run-select").select_option(run_id)
             page.wait_for_timeout(900)
             page.screenshot(path=str(SCREENSHOTS / "02-live-execution.png"), full_page=True)
-            assert_visible(page, "Run event timeline")
+            page.locator("[data-live-mode='dag']").click()
+            assert_visible(page, "Task dependency graph")
             page.screenshot(path=str(SCREENSHOTS / "03-task-dag.png"), full_page=True)
+            page.locator("[data-live-mode='trace']").click()
+            assert_visible(page, "Agent trace / provenance")
             page.screenshot(path=str(SCREENSHOTS / "04-agent-trace.png"), full_page=True)
 
             seed(page, requires_approval=True)
@@ -159,6 +174,10 @@ def main() -> None:
     missing = [str(path) for path in required if not path.exists() or path.stat().st_size < 10_000]
     if missing:
         raise RuntimeError("Screenshot capture incomplete: " + ", ".join(missing))
+    screenshot_hashes = {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in required}
+    focus_hashes = [screenshot_hashes[name] for name in ["02-live-execution.png", "03-task-dag.png", "04-agent-trace.png"]]
+    if len(set(focus_hashes)) != 3:
+        raise RuntimeError("Focused live/DAG/trace screenshots are not distinct: " + ", ".join(focus_hashes))
     if not video_path or not Path(video_path).exists():
         raise RuntimeError("Playwright did not produce a browser video")
 
@@ -173,7 +192,10 @@ def main() -> None:
     subprocess.run([str(ffmpeg), "-y", "-i", str(video_path), "-vf", "scale=1280:-2", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(mp4)], check=True, capture_output=True)
     subprocess.run([str(ffmpeg), "-y", "-i", str(video_path), "-t", "12", "-vf", "fps=8,scale=900:-1:flags=lanczos", str(gif)], check=True, capture_output=True)
     subprocess.run([str(ffmpeg), "-y", "-ss", "00:00:03", "-i", str(video_path), "-frames:v", "1", str(poster)], check=True, capture_output=True)
-    manifest = {"capture": "Playwright Chromium", "baseUrl": BASE_URL, "viewport": "1440x900", "runId": run_id, "provider": "MockAgentProvider", "truth": "deterministic fixture evidence", "gifDurationSeconds": 12, "videoIntent": "60-120 second research walkthrough replay", "screenshots": [path.name for path in required], "video": str(mp4.relative_to(ROOT)), "gif": str(gif.relative_to(ROOT)), "poster": str(poster.relative_to(ROOT)), "capturedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+    screenshot_evidence = [{"file": path.name, "sha256": screenshot_hashes[path.name], "intent": {"01-overview.png": "command center and truth banner", "02-live-execution.png": "persisted live execution state and transitions", "03-task-dag.png": "persisted dependency graph and task states", "04-agent-trace.png": "provider/tool provenance and independent verifier", "05-approval-center.png": "approval interruption", "06-prompt-lab.png": "versioned instructions", "07-evaluation-lab.png": "measured development comparison", "08-architecture.png": "implemented/proposed boundary", "09-reproducibility.png": "experiment contract and limits", "10-evidence-inspector.png": "artifact and verifier evidence", "11-mobile.png": "responsive control plane"}[path.name]} for path in required]
+    video_duration = media_duration(mp4, ffmpeg)
+    gif_duration = media_duration(gif, ffmpeg)
+    manifest = {"capture": "Playwright Chromium", "baseUrl": BASE_URL, "viewport": "1440x900", "runId": run_id, "provider": "MockAgentProvider", "truth": "deterministic fixture evidence", "screenshotIdentityCheck": "02/03/04 SHA-256 values are required to differ", "screenshotEvidence": screenshot_evidence, "gifDurationSeconds": gif_duration, "videoDurationSeconds": video_duration, "mediaIntent": {"gif": "8-12 second README preview", "mp4": "60-90 second complete research walkthrough"}, "screenshots": [path.name for path in required], "video": str(mp4.relative_to(ROOT)), "gif": str(gif.relative_to(ROOT)), "poster": str(poster.relative_to(ROOT)), "capturedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
     (DEMO_ASSETS / "capture-manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     print(json.dumps({"screenshots": len(required), "video": str(mp4), "gif": str(gif), "poster": str(poster), "runId": run_id}, indent=2))
 
