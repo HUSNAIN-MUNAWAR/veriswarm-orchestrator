@@ -14,6 +14,18 @@ VeriSwarm is an evidence-aware multi-agent orchestration and qualification platf
 - Control-plane UI at `http://localhost:4317` when the API is running, with overview, live trace, approvals, prompt lab, evaluation lab, and architecture views.
 - Fixture benchmark with strategy comparison and one-sided lower confidence bounds; insufficient samples are reported as inconclusive.
 
+## Runtime visual evidence
+
+The screenshots below were captured from the running local API and browser UI with the explicit `MockAgentProvider` boundary. They are distinct DOM views: the queue, task DAG, and event trace are not copies of one another.
+
+| View | Evidence |
+| --- | --- |
+| Live execution queue | ![Live execution queue](docs/demo/screenshots/live-execution.png) |
+| Task DAG | ![Task DAG](docs/demo/screenshots/task-dag.png) |
+| Agent trace | ![Agent trace](docs/demo/screenshots/agent-trace.png) |
+
+Reproduce the capture with `py -3.12 scripts/capture_browser_evidence.py` while `npm run dev` is running. The script captures only rendered application DOM and does not add annotations or synthetic metrics.
+
 ## Run the real working slice
 
 ```powershell
@@ -64,4 +76,4 @@ See [`RESEARCH_ALIGNMENT.md`](RESEARCH_ALIGNMENT.md) and [`EVALUATION_METHODOLOG
 
 ## Known limits
 
-This first vertical slice uses a file store and an in-process scheduler. It has no identity provider, production database, Redis queue, Python evaluator, browser/video capture, or GitHub remote configured in the supplied workspace. Those are explicit blockers in [`BLOCKERS.md`](BLOCKERS.md), not hidden behind fake UI claims.
+This first vertical slice uses a file store and an in-process scheduler. It has no identity provider, production database, Redis queue, Python evaluator, or authenticated live Codex smoke capture. Browser screenshots are now captured for the mock-provider runtime; no video or live-provider claim is made. Those are explicit blockers in [`BLOCKERS.md`](BLOCKERS.md), not hidden behind fake UI claims.

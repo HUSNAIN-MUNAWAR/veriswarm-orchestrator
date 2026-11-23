@@ -7,5 +7,6 @@
 - [x] State transitions, retries, cancellation, and duplicate events are tested.
 - [x] Mermaid sources document the implemented architecture.
 - [ ] Authenticated live Codex smoke run captured.
-- [ ] Browser screenshots/video captured.
+- [x] Browser screenshots captured from the mock-provider UI.
+- [ ] Browser video captured.
 - [ ] GitHub remote configured and verified.
