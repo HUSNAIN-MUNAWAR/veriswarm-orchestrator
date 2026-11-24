@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, open, readFile, rename, unlink } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import type { AgentEvent, Artifact, ApprovalRequest, EvaluationRecord, PromptVersion, Run, StoreData, Task } from "../../contracts/src/index.ts";
 import { EventSchema, RunSchema, TaskSchema } from "../../contracts/src/index.ts";
@@ -9,16 +9,47 @@ const empty: StoreData = { runs: [], tasks: [], events: [], artifacts: [], appro
 export class FileStore {
   private data: StoreData = structuredClone(empty);
   private loaded = false;
+  private persistQueue: Promise<void> = Promise.resolve();
   constructor(private readonly filePath = join(process.cwd(), "data", "veriswarm.json")) {}
 
   async load(): Promise<void> {
     if (this.loaded) return;
     await mkdir(dirname(this.filePath), { recursive: true });
-    try { this.data = JSON.parse(await readFile(this.filePath, "utf8")) as StoreData; } catch { await this.persist(); }
+    try {
+      const parsed: unknown = JSON.parse(await readFile(this.filePath, "utf8"));
+      if (!isStoreData(parsed)) throw new Error("Persisted store is missing one or more collection arrays");
+      this.data = parsed;
+    } catch (error) {
+      if (isFileNotFound(error)) {
+        await this.persist();
+      } else {
+        const message = error instanceof Error ? error.message : String(error);
+        throw new Error(`Unable to load persisted store ${this.filePath}: ${message}`);
+      }
+    }
     this.loaded = true;
   }
   snapshot(): StoreData { return structuredClone(this.data); }
-  async persist(): Promise<void> { await mkdir(dirname(this.filePath), { recursive: true }); await writeFile(this.filePath, JSON.stringify(this.data, null, 2)); }
+  async persist(): Promise<void> {
+    const payload = JSON.stringify(this.data, null, 2);
+    this.persistQueue = this.persistQueue.catch(() => undefined).then(async () => {
+      await mkdir(dirname(this.filePath), { recursive: true });
+      const temporaryPath = `${this.filePath}.${process.pid}.${randomUUID()}.tmp`;
+      let handle: Awaited<ReturnType<typeof open>> | undefined;
+      try {
+        handle = await open(temporaryPath, "wx", 0o600);
+        await handle.writeFile(payload, "utf8");
+        await handle.sync();
+        await handle.close();
+        handle = undefined;
+        await rename(temporaryPath, this.filePath);
+      } finally {
+        if (handle) await handle.close().catch(() => undefined);
+        await unlink(temporaryPath).catch(() => undefined);
+      }
+    });
+    await this.persistQueue;
+  }
   async createRun(input: Omit<Run, "id" | "version" | "createdAt" | "updatedAt">): Promise<Run> {
     const now = new Date().toISOString(); const run = RunSchema.parse({ ...input, id: randomUUID(), version: 0, createdAt: now, updatedAt: now });
     this.data.runs.push(run); await this.persist(); return run;
@@ -40,4 +71,14 @@ export class FileStore {
   async cancelRun(id: string, reason = "Cancelled by operator"): Promise<Run> { const run = this.data.runs.find((item) => item.id === id); if (!run) throw new Error("Run not found"); if (["completed", "failed", "rejected", "cancelled"].includes(run.status)) return run; const updated = await this.updateRun(id, { status: "cancelled", error: reason }); for (const task of this.data.tasks.filter((item) => item.runId === id && !["completed", "failed", "cancelled", "skipped"].includes(item.status))) await this.updateTask(task.id, { status: "cancelled", error: reason }); await this.addEvent({ runId: id, type: "run.cancelled", payload: { reason }, dedupeKey: "run.cancelled" }); return updated; }
   async addPromptVersion(input: Omit<PromptVersion, "id" | "createdAt">): Promise<PromptVersion> { const version = { ...input, id: randomUUID(), createdAt: new Date().toISOString() }; this.data.promptVersions.push(version); await this.persist(); return version; }
   async addEvaluation(input: Omit<EvaluationRecord, "id" | "createdAt">): Promise<EvaluationRecord> { const evaluation = { ...input, id: randomUUID(), createdAt: new Date().toISOString() }; this.data.evaluations.push(evaluation); await this.persist(); return evaluation; }
+}
+
+function isFileNotFound(error: unknown): boolean {
+  return typeof error === "object" && error !== null && "code" in error && (error as { code?: unknown }).code === "ENOENT";
+}
+
+function isStoreData(value: unknown): value is StoreData {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as Record<string, unknown>;
+  return ["runs", "tasks", "events", "artifacts", "approvals", "promptVersions", "evaluations"].every((key) => Array.isArray(candidate[key]));
 }
